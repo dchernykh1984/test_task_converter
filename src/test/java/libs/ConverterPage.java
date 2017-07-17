@@ -1,6 +1,5 @@
 package libs;
 
-import com.codeborne.selenide.Condition;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 
@@ -33,15 +32,16 @@ public class ConverterPage {
             "//ul[@class='converter-popularList']/li[text()='%s']";
     private String PATH_POPULAR_CURRENCY_SELECTED_ITEMS = PATH_CONVERTER_TILE +
             "//div/ul[@class='converter-popularList']/li[@class='converter-popularItem converter-popularItem__selected']";
-    private String TEPLATE_PATH_GENERAL_CURRENCY = PATH_CONVERTER_TILE +
-            "//div/ul[@class='converter-currencies']/li[@class='converter-currenciesItem converter-currenciesItem__selected']";
     private String PATH_GENERAL_CURRENCY_SELECTED_ITEMS = PATH_CONVERTER_TILE +
+            "//ul[@class='converter-currencies']/li[@class='converter-currenciesItem converter-currenciesItem__selected']";
+    private String TEPLATE_PATH_GENERAL_CURRENCY = PATH_CONVERTER_TILE +
             "//ul[@class='converter-currencies']/li/span[@class='converter-currenciesName' and text()='%s']";
-    private String TEMPLATE_FROM_TO_TAB = PATH_CONVERTER_TILE + "//div[@class='converter-tab']/div[%d]";
-    private String TEMPLATE_FROM_TO_CURRENCY = TEMPLATE_FROM_TO_TAB + "//span[]";
-    private String TEMPLATE_FROM_TO_CURRENCY_INPUT = TEMPLATE_FROM_TO_TAB + "//input[]";
+    private String PATH_FROM_TO_TABS = "//div[@class='converter-tab']";
+    private String TEMPLATE_FROM_TO_TAB = PATH_FROM_TO_TABS + "/div[%d]";
+    private String TEMPLATE_FROM_TO_CURRENCY = TEMPLATE_FROM_TO_TAB + "//span";
+    private String TEMPLATE_FROM_TO_CURRENCY_INPUT = TEMPLATE_FROM_TO_TAB + "//input";
     private String TO_TOP_BUTTON_LOCATOR = "//div[@class='ui-button-top js-button-top fixed']";
-    private String PATH_CLEAR_BUTTON = TEMPLATE_FROM_TO_TAB + "//div[contains(@class,'ui-btn ui-btn__middle ui-btn__addGreyLight')]";
+    private String PATH_CLEAR_BUTTON = PATH_FROM_TO_TABS + "/div[@class='converter-tabBtns']/div";
     private String PATH_CLOSE_QUESTION_POPUP = "//div[@id='nanorep-fw']//button[contains(@class,'widget-floating__button widget-floating__button--close')]";
 
     private String selectedTabClass = "converter-tabItem converter-tabItem__selected";
@@ -63,7 +63,7 @@ public class ConverterPage {
     public ConverterPage switchCurrenciesTab(FromTo ft) {
         toPageTop();
         stateTabFromTo = ft;
-        $(By.xpath(String.format(TEMPLATE_FROM_TO_CURRENCY, stateTabFromTo.getValue()+1))).click();
+        $(By.xpath(String.format(TEMPLATE_FROM_TO_TAB, stateTabFromTo.getValue()+1))).click();
         return this;
     }
 
@@ -87,6 +87,8 @@ public class ConverterPage {
     public ConverterPage setCurrencyValue(String value) {
         $(By.xpath(String.format(TEMPLATE_FROM_TO_CURRENCY_INPUT,  stateTabFromTo.getValue()+1))).setValue(value);
         currencyValues[stateTabFromTo.getValue()] = value;
+        currencyValues[(stateTabFromTo.getValue() +1)%2] =
+                $(By.xpath(String.format(TEMPLATE_FROM_TO_CURRENCY_INPUT,  ((stateTabFromTo.getValue()+1) % 2)+1))).getValue();
         return this;
     }
 
@@ -103,11 +105,16 @@ public class ConverterPage {
         //check tab currencies
         for(int i = 0;i<=1;i++) {
             checkSelectedItems(String.format(TEMPLATE_FROM_TO_CURRENCY,i+1), stateCurrencies[i].getShortDescription());
-            Assert.assertTrue(
+            Assert.assertTrue("Incorrect selected tab",
                     $(By.xpath(
                             String.format(TEMPLATE_FROM_TO_TAB, i+1))).
                             getAttribute("class").
                             equals((i==stateTabFromTo.getValue()?selectedTabClass:notSelectedTabClass)));
+            Assert.assertTrue("Incorrect value of currency",
+                    $(By.xpath(
+                            String.format(TEMPLATE_FROM_TO_CURRENCY_INPUT, stateTabFromTo.getValue()+1))).
+                            getValue().
+                            equals(currencyValues[stateTabFromTo.getValue()]));
         }
         //check popular currency
         checkSelectedItems(PATH_GENERAL_CURRENCY_SELECTED_ITEMS, getCurrentCurrency().getFullDescription());
@@ -116,8 +123,12 @@ public class ConverterPage {
         } else {
             checkSelectedItems(PATH_POPULAR_CURRENCY_SELECTED_ITEMS);
         }
-        $(By.id(ID_SEARCH_CURRENCIES)).shouldHave(Condition.text(searchCurrenciesFilter));
-
+        //check currency names filter
+        Assert.assertTrue("Currencies filter has incorrect value",
+                $(By.id(
+                        ID_SEARCH_CURRENCIES)).
+                        getValue().
+                        equals(searchCurrenciesFilter));
         return this;
     }
 

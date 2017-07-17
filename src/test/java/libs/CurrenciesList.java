@@ -1,6 +1,6 @@
 package libs;
 
-import java.util.LinkedList;
+import java.util.Vector;
 
 /**
  * Created by Denis on 7/17/2017.
@@ -84,22 +84,22 @@ public class CurrenciesList {
             new Currency("AUD", "Australian Dollar"),
             new Currency("NZD", "New Zealand Dollar")
     };
-    public static Currency[] getPopularCurrencies(String filter) {
+    public static Vector<Currency> getPopularCurrencies(String filter) {
         return filterArray(popularCurrencies, filter);
     }
 
-    public static Currency[] getAllCurrencies(String filter) {
+    public static Vector<Currency> getAllCurrencies(String filter) {
         return filterArray(allCurrencies, filter);
     }
 
-    private static Currency[] filterArray(Currency[] curs, String filter) {
-        LinkedList<Currency> result = new LinkedList<>();
+    private static Vector<Currency> filterArray(Currency[] curs, String filter) {
+        Vector<Currency> result = new Vector<>();
         for(Currency cur: curs) {
             if(cur.getShortDescription().contains(filter) || cur.getLongDescription().contains(filter)) {
                 result.add(cur);
             }
         }
-        return (Currency[]) result.toArray();
+        return result;
     }
 
     public static Currency get(String shortName) {

@@ -25,7 +25,7 @@ public class Currency {
     }
 
     public boolean isPopular() {
-        for(Currency cur:CurrenciesList.getPopularCurrencies(null)) {
+        for(Currency cur:CurrenciesList.getPopularCurrencies("")) {
             if(equals(cur)) return true;
         }
         return false;

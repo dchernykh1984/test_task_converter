@@ -26,16 +26,17 @@ public class ConverterTest {
     }
 
     @Test
-    public void userSelectsFromCurrencyPopular() {
-        calcPage.switchCurrenciesTab(ConverterPage.FromTo.FROM);
+    public void userSelectsPopularCurrency() {
         for(Currency cur: CurrenciesList.getPopularCurrencies(CURRENCIES_LIST_SIZE_DECREASER_POPULAR)) {
             calcPage.changePopularCurrency(cur).checkPageState();
         }
     }
 
     @Test
-    public void userSelectsToCurrencyGeneral() {
-        calcPage.switchCurrenciesTab(ConverterPage.FromTo.TO);
+    public void userSelectsFromToCurrencyGeneral() {
+        calcPage.switchCurrenciesTab(ConverterPage.FromTo.FROM).
+                changeGeneralCurrency(CurrenciesList.getPopularCurrencies(CURRENCIES_LIST_SIZE_DECREASER_POPULAR).get(0)).
+                switchCurrenciesTab(ConverterPage.FromTo.TO);
         for(Currency cur: CurrenciesList.getAllCurrencies(CURRENCIES_LIST_SIZE_DECREASER_GENERAL)) {
             calcPage.changeGeneralCurrency(cur).checkPageState();
         }
@@ -44,8 +45,9 @@ public class ConverterTest {
     public void userClicksButtonClear() {
         calcPage.
                 searchByCurrency(CURRENCIES_LIST_SIZE_DECREASER_POPULAR).
-                changePopularCurrency(CurrenciesList.getPopularCurrencies(CURRENCIES_LIST_SIZE_DECREASER_POPULAR)[0]).
+                changePopularCurrency(CurrenciesList.getPopularCurrencies(CURRENCIES_LIST_SIZE_DECREASER_POPULAR).get(0)).
                 setCurrencyValue("1").
+                checkPageState().
                 clearForm().
                 checkPageState();
     }
