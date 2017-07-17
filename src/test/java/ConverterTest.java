@@ -5,8 +5,6 @@ import libs.Currency;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Base64;
-
 import static com.codeborne.selenide.Selenide.open;
 
 
@@ -23,7 +21,7 @@ public class ConverterTest {
         Configuration.browser = "chrome";
         System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
 
-        open(new String(Base64.getDecoder().decode("aHR0cHM6Ly93d3cuZXhuZXNzLmNvbS90b29scy9jb252ZXJ0ZXIv")));
+        open(new StringBuffer("/retrevnoc/sloot/moc.ssenxe.www//:sptth").reverse().toString());
         calcPage = new ConverterPage();
         calcPage.closeQuestionPopup();
     }
