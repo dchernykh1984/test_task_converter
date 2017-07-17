@@ -74,17 +74,20 @@ public class ConverterPage {
     }
 
     public ConverterPage searchByCurrency(String filter) {
+        toPageTop();
         $(By.id(ID_SEARCH_CURRENCIES)).setValue(filter);
         searchCurrenciesFilter = filter;
         return this;
     }
     public ConverterPage changeGeneralCurrency(Currency cur) {
+        toPageTop();
         $(By.xpath(String.format(TEPLATE_PATH_GENERAL_CURRENCY, cur.getLongDescription()))).click();
         setCurrentCurrency(cur);
         return this;
     }
 
     public ConverterPage setCurrencyValue(String value) {
+        toPageTop();
         $(By.xpath(String.format(TEMPLATE_FROM_TO_CURRENCY_INPUT,  stateTabFromTo.getValue()+1))).setValue(value);
         currencyValues[stateTabFromTo.getValue()] = value;
         currencyValues[(stateTabFromTo.getValue() +1)%2] =
@@ -133,6 +136,7 @@ public class ConverterPage {
     }
 
     public ConverterPage clearForm() {
+        toPageTop();
         $(By.xpath(PATH_CLEAR_BUTTON)).click();
         searchCurrenciesFilter = "";
         currencyValues[0] = "0";

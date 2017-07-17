@@ -20,6 +20,9 @@ public class ConverterTest {
 
     @Before
     public void configure() {
+        Configuration.browser = "chrome";
+        System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
+
         open(new String(Base64.getDecoder().decode("aHR0cHM6Ly93d3cuZXhuZXNzLmNvbS90b29scy9jb252ZXJ0ZXIv")));
         calcPage = new ConverterPage();
         calcPage.closeQuestionPopup();
